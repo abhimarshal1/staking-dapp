@@ -81,6 +81,7 @@ const WalletConnectModal = ({ isOpen, onClose }: Props) => {
           <Flex flexDir="column" gap="1rem">
             {connectors.map((connector) => (
               <Button
+                key={connector.id}
                 onClick={() =>
                   handleConnect(connector.id.toLowerCase(), connector)
                 }

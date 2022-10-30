@@ -64,7 +64,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
       (toastId.current = toast.loading("Check wallet for prompt", {
         autoClose: false,
       })),
-    [toastId.current]
+    []
   );
 
   const setTxnInProgress = useCallback(
@@ -85,7 +85,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
           </Box>
         ),
       }),
-    [toastId.current]
+    []
   );
 
   const setTxnError = useCallback(
@@ -99,7 +99,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
         ),
         autoClose: 5000,
       }),
-    [toastId.current]
+    []
   );
 
   const {
@@ -223,7 +223,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
           break;
       }
     },
-    [amount]
+    [amount, balance, limit]
   );
 
   useEffect(() => {
@@ -234,7 +234,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
     initiateTxn();
     setAction(txnType.APPROVE);
     approve && approve();
-  }, []);
+  }, [initiateTxn, approve]);
 
   const handleStake = useCallback(() => {
     const error = checkError(txnType.STAKE);
@@ -244,7 +244,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
       setAction(txnType.STAKE);
       stake && stake();
     }
-  }, [amount]);
+  }, [checkError, initiateTxn, stake]);
 
   const handleUnstake = useCallback(() => {
     const error = checkError(txnType.UNSTAKE);
@@ -254,11 +254,7 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
       setAction(txnType.UNSTAKE);
       unstake && unstake();
     }
-  }, [amount]);
-
-  if (isCheckingAllowance) {
-    return null;
-  }
+  }, [checkError, initiateTxn, unstake]);
 
   const isAllowanced = useMemo(
     () => allowance && +allowance.toString(),
@@ -266,6 +262,10 @@ const Actions = ({ amount, balance, limit, ...rest }: Props) => {
   );
 
   const isUnsupportedChain = useMemo(() => chain && chain.unsupported, [chain]);
+
+  if (isCheckingAllowance) {
+    return null;
+  }
 
   return (
     <>
